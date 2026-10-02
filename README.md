@@ -1,6 +1,18 @@
 # self-hosted-ai-stack
 
-A production multi-model AI platform running locally on a single 12GB GPU (RTX 4070 Super), Windows 11 + WSL2, containerized with Docker and networked over Tailscale to a second always-on node.
+A production multi-model AI platform running locally on a single 12GB GPU (RTX 4070 Super), Windows 11 + WSL2, containerized with Docker and networked over Tailscale to a second always-on node. LLM inference, embeddings, rerankers, RAG, web search and agent memory all run self-hosted at **$0/day in API spend** — and every model slot was picked by measurement, not by leaderboard position.
+
+```
+  Windows 11 └─ WSL2 (Docker Desktop, NVIDIA GPU passthrough)
+      ├─ llama-swap ─ llama.cpp ─ 5+ GGUF models (staggered sleep-unload timers)
+      ├─ LightRAG   ─ Qwen3-Embedding + Qwen3-Reranker (sleep-unload VRAM management)
+      ├─ SearXNG    (web search)          ├─ Honcho (agent memory)
+      └─ Tailscale  ─ second always-on node (cross-node memory sync)
+```
+
+## Why
+
+Running several models at once on one consumer GPU, choosing the right model for each auxiliary role (review, compression, titles/summaries, vision) without paying per token, and keeping the whole thing reliable enough to run daily. This repo collects the measurement harness, the reference architecture, and the hardened deployment templates that answer those three problems.
 
 ## What's here
 
